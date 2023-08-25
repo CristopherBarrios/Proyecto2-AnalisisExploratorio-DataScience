@@ -6,6 +6,6 @@ Creado por:
 
 
 
-[Instrucciones](./Proyecto2.pdf)
+[Instrucciones](./instrucciones/Proyecto2.pdf)
 
 [.ipynb - Codigo](./analisisExploratorio.ipynb)
