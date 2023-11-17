@@ -14,7 +14,7 @@ from sklearn import metrics
 #######
 #################Modelos
 modelv1 = keras.models.load_model('checkpoint/model_checkpoint.h5') 
-modelv2 = keras.models.load_model('checkpoint/model2_checkpoint.h5')
+#modelv2 = keras.models.load_model('checkpoint/model2_checkpoint.h5')
 
 
 # im1 = Image.open("./example.jpg")
@@ -184,7 +184,7 @@ while True:
 	if event == button2text :
 		print("Boton 2 presionado")
 		print("Enviare este file al modelo 2 : " +globalfile)
-		makeprediction2(globalfile)
+		globalresult = makeprediction2(globalfile)
 		mywindow["-OUTPUT-"].update(globalresult) 
 
 
