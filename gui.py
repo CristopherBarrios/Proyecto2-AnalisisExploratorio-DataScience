@@ -14,7 +14,7 @@ from sklearn import metrics
 #######
 #################Modelos
 modelv1 = keras.models.load_model('checkpoint/model_checkpoint.h5') 
-# modelv2 = keras.models.load_model('checkpoint/model_checkpoint.h5')
+modelv2 = keras.models.load_model('checkpoint/model2_checkpoint.h5')
 
 
 # im1 = Image.open("./example.jpg")
@@ -58,11 +58,11 @@ layout1 = [
 
 layout2 = [
     [sg.Text("Seleccionar el modelo")],
-    [sg.Text("Modelo 1: 85% Accuracy")],
+    [sg.Text("Modelo 1: 81% Accuracy")],
     [sg.Button(button1text)],
-    [sg.Text("Modelo 2: 52% Accuracy")],
+    [sg.Text("Modelo 2: 71% Accuracy")],
     [sg.Button(button2text)],
-    [sg.Text("OUTPUT:")],
+    [sg.Text("DIAGNOSTICO:")],
     [sg.Text("", key="-OUTPUT-")],
 ]
 
@@ -105,7 +105,12 @@ def makeprediction1(filename):
 
             # Make the prediction
             prediction = modelv1.predict(preprocessed_image)
-            globalresult = prediction
+            # Extract the predicted class label
+            predicted_class = np.argmax(prediction, axis=1)[0]
+            class_labels = ['LAA', 'CE']
+            predicted_class_label = class_labels[predicted_class]
+
+            globalresult = predicted_class_label + str(prediction)
         else:
             globalresult = "Failed to open the image"
     except Exception as e:
@@ -126,10 +131,43 @@ def makeprediction1(filename):
 
 
 def makeprediction2(filename):
-	#prediction = modelv1.predict(Image.open(filename))
-	#print(prediction)
-	prediction = modelv2.predict(Image.open(filename))
-	globalresult="prediction"
+    try:
+        # Open the image using PIL
+        image = Image.open(filename)
+
+        if image is not None:
+            print("Image opened successfully")
+
+            # Resize the image using the PIL .resize() method
+            image = image.resize((512, 512))
+
+            # Convert the resized PIL image to a NumPy array
+            image_array = np.array(image)
+
+            # Normalize the image by dividing by 255
+            preprocessed_image = image_array / 255.0
+            print("Image preprocessed successfully")
+
+            # Expand dimensions if needed (depends on model input shape)
+            if len(preprocessed_image.shape) == 2:
+                preprocessed_image = np.expand_dims(preprocessed_image, axis=0)
+
+            # Make the prediction
+            prediction = modelv2.predict(preprocessed_image)
+            # Extract the predicted class label
+            predicted_class = np.argmax(prediction, axis=1)[0]
+            class_labels = ['LAA', 'CE']
+            predicted_class_label = class_labels[predicted_class]
+
+            globalresult = predicted_class_label + str(prediction)
+        else:
+            globalresult = "Failed to open the image"
+    except Exception as e:
+        # Handle any exceptions that may occur during image loading or preprocessing
+        print(f"Error: {e}")
+        globalresult = "Error occurred during image loading/preprocessing"
+
+    return globalresult
 	
 
 
